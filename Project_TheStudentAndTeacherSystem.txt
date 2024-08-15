@@ -1,0 +1,13 @@
+THE STUDENTS
+*you will create a system where students can edit their details
+*submit assignments
+*completed tests. 
+THE TEACHERS 
+*set tasks
+*grade students
+*add or change details.
+
+
+
+
+Note: Create a handler that goes into if the person is a teacher or student. If a student tries to access the teacher page, then they will be kicked out through a special identifier on the teachers username ex) "uca:Mathew". In Dev.
