@@ -6,10 +6,10 @@
 
 using namespace std;
 namespace fs = std::filesystem;
-
 const string prefix = "uca";
 string username, password, un, pw;
 const fs::path dir = "user_data";
+const fs::path dir2 = "user_data\\assignments";
 fs::path filePath;
 bool loggedIn = false;
 string assignments;
@@ -92,7 +92,8 @@ void handleMainMenu() {
     string loginOrRegister;
 
     cout << "\t\t\t_________________________________________________\n\n\n";
-    cout << "\t\t\t     Welcome to The Student Management System!    \n\n\n";
+    cout << "\t\t\t    Welcome to The Student Management System!    \n\n\n";
+    cout << "\t\t\t_________________________________________________\n\n\n";
     cout << "Login or Register: ";
     cin >> loginOrRegister;
 
@@ -174,7 +175,6 @@ void handleStudent() {
                 cerr << "Error: Could not write to the file. Please contact your local Administrator! Code: 14" << endl;
             }
             handleMainMenu();
-
         }
         else if (change == 2) {
             string newPassword;
@@ -189,6 +189,7 @@ void handleStudent() {
             else {
                 cerr << "Error: Old password not found in the file content. Code: 15" << endl;
             }
+
             ofstream outFile(filePath);
             if (outFile) {
                 outFile << fileContent;
@@ -199,7 +200,6 @@ void handleStudent() {
                 cerr << "Error: Could not write to the file. Please contact your local Administrator! Code: 16" << endl;
             }
             handleMainMenu();
-
         }
         else {
             cout << "Invalid choice. Please select a valid option." << endl;
@@ -207,16 +207,24 @@ void handleStudent() {
         }
         break;
     }
-    case 2:
+    case 2: {
         cout << "Loading..." << endl;
-        if (assignments.empty()) {
-            cout << "There Are Currently No Assignments Assigned!" << endl;
+        string submission;
+        fs::path assignmentPath = dir2 / (username + ".txt");
+        ofstream outputFile(assignmentPath, ios::app); // Open in append mode
+        if (outputFile) {
+            cout << "What would you like to submit in the assignment? ";
+            cin.ignore(); // Ignore leftover newline
+            getline(cin, submission);
+            outputFile << submission << endl;
+            cout << "Assignment submitted successfully!" << endl;
         }
         else {
-            cout << assignments << endl;
+            cerr << "Error: Could not open assignment file for writing. Code: 20" << endl;
         }
         handleStudent();
         break;
+    }
     case 3:
         cout << "Loading completed tests..." << endl;
         if (tests.empty() && testScores.empty()) {
@@ -281,7 +289,7 @@ void handleTeacher() {
     if (!loggedIn) {
         handleMainMenu();
     }
-
+    
     int response;
     cout << "Welcome, Teacher!" << endl;
     cout << "1. Handle Assignments" << endl;
@@ -291,7 +299,8 @@ void handleTeacher() {
     cout << "What would you like to do? ";
     cin >> response;
     cin.ignore();  // Clear the newline character from the input buffer
-
+    
+    //Code 22, 21
     switch (response) {
     case 1: {
         string studentUsername, assignment;
@@ -299,12 +308,14 @@ void handleTeacher() {
         getline(cin, studentUsername);
         cout << "Enter assignment name to add: ";
         getline(cin, assignment);
-
-        fs::path studentFilePath = dir / (studentUsername + ".txt");
-        ofstream studentFile(studentFilePath, ios::app);
-        if (studentFile) {
-            studentFile << assignment << endl;
+        
+        fs::path assignmentPath = dir2 / (studentUsername + ".txt");
+        ofstream outputFile(assignmentPath);
+        
+        if (outputFile) {
+            outputFile << assignment << endl;
             cout << "Assigned \"" << assignment << "\" to " << studentUsername << "." << endl;
+            handleTeacher();
         }
         else {
             cerr << "Error: Could Not Open Student File. Code: 21" << endl;
@@ -328,7 +339,7 @@ void handleTeacher() {
             cout << tests[i] << ": " << testScores[i] << endl;
         }
 
-        cout << "Enter the Number of the Test to Update (0 to " << tests.size() - 1 << "): ";
+        cout << "Enter the Number of the Test to Update (0 to 150): ";
         int testIndex;
         cin >> testIndex;
         cin.ignore();
