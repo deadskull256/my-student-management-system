@@ -1,4 +1,4 @@
-Hi! This is my first project in c++. Pending on your choice of VS or VSC. Best thing to do is just copy the code into your editor and run it. Gonna learn how to make an executable later.
+Hi! This is my first project in c++. Pending on your choice of VS or VSC. Executable is included.
 
 If you want to run the program. You have to run it in Administrator. As this allows the <filesystem> to work. If on VSC.
 
